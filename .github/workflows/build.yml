@@ -4,6 +4,13 @@ name: Build Stalwart
 # (no enterprise, only the features listed in FEATURES below) to GHCR.
 
 on:
+  # Changes to the build itself trigger a run (still a no-op if the current
+  # upstream release has already been published here).
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/build.yml'
+      - 'scripts/**'
   schedule:
     # Poll upstream every 6 hours; a no-op unless there is a new release.
     - cron: '23 */6 * * *'
@@ -20,7 +27,7 @@ on:
 
 env:
   UPSTREAM: stalwartlabs/stalwart
-  FEATURES: sqlite s3
+  FEATURES: sqlite rocks postgres s3
 
 concurrency:
   group: build-stalwart

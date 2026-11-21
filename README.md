@@ -1,8 +1,13 @@
 # banksy-stalwart
 
 Automated container builds of [Stalwart](https://github.com/stalwartlabs/stalwart)
-compiled with only the `sqlite` and `s3` cargo features: no enterprise code, and no
-RocksDB/Postgres/MySQL/Redis/NATS/Azure.
+
+Compiled for single-node deployments with:
+
+    sqlite rocks postgres s3
+
+AGPL build - no 'enterprise' features.
+
 
 ```sh
 docker pull ghcr.io/<owner>/banksy-stalwart:latest
@@ -13,7 +18,7 @@ upstream's: same base image, entrypoint, volumes, ports and healthcheck.
 
 ## How it works
 
-`.github/workflows/build.yml` runs every 6 hours:
+`.github/workflows/build.yml` runs periodically:
 
 1. **check**: asks the GitHub API for upstream's latest (non-pre-)release. If
    this repo already has a GitHub release of that tag, it stops.
