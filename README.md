@@ -26,6 +26,8 @@ upstream's: same base image, entrypoint, volumes, ports and healthcheck.
    in upstream's own `Dockerfile` via `scripts/patch-dockerfile.sh`, and builds
    each architecture in parallel, pushing by digest. A registry build cache
    (`banksy-stalwart-buildcache:<arch>`) keeps the dependency layer between releases.
+   Both architectures use ThinLTO for dependency compilation and the final build
+   to reduce peak build memory compared with upstream's fat LTO.
 3. **publish**: combines the digests into one multi-arch manifest, tags it, and
    creates a matching GitHub release here (which is the "already built" marker).
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Rewrites the cargo feature list in upstream Stalwart's Dockerfile so that we
-# build only the features we want (no enterprise, no extra stores).
+# build only the features we want (no enterprise, no extra stores), using ThinLTO
+# for reduced memory consumption on the runner
 #
 # Usage: patch-dockerfile.sh <path/to/Dockerfile> "<features>"
 #
@@ -27,6 +28,10 @@ for step in 'cargo chef cook' 'cargo build'; do
 done
 
 sed -E -i "s/--features \"[^\"]*\"/--features \"${features}\"/g" "$dockerfile"
+
+# Override upstream's fat LTO for both dependency cooking and the final build.
+# Keep these settings identical so the cooked dependencies can be reused.
+sed -E -i '/CARGO_PROFILE_RELEASE_LTO=thin/! s/(cargo chef cook|cargo build)/CARGO_PROFILE_RELEASE_LTO=thin \1/' "$dockerfile"
 
 # Sanity checks on the result.
 if grep -n -- '--features' "$dockerfile" | grep -v -- "--features \"${features}\""; then
